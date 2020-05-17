@@ -1,0 +1,16 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t zarak/react-test -f ./client/Dockerfile.dev .
+
+script:
+  - docker run -e CI=true zarak/react-test npm test
+
+after_success:
+  - docker build -t zarak/multi-client ./client
+  - docker build -t zarak/multi-nginx ./nginx
+  - docker build -t zarak/multi-server ./server
+  - docker build -t zarak/multi-worker ./worker
